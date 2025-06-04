@@ -15,16 +15,6 @@ function App() {
      nodeId: null
   });
 
-  const generateRandomPosition = () => {
-    const newNode = {
-      id: nodeCounter,
-      x: Math.random() * (window.innerWidth * 0.8 - 100) + 50,
-      y: Math.random() * (window.innerHeight * 0.7 - 100) + 50,
-    };
-    setNodeCounter(prev => prev + 1);
-    return newNode;
-  }
-
   useEffect(() => {
     let counter = nodeCounter;
     const initialNodes = [];
@@ -41,7 +31,15 @@ function App() {
   }, [])
 
   const addNode = () => {
-    setNodes(prev => [...prev, generateRandomPosition()]);
+    setNodes(prev => {
+      const newNode = {
+        id: nodeCounter,
+        x: Math.random() * (window.innerWidth * 0.8 - 100) + 50,
+        y: Math.random() * (window.innerHeight * 0.7 - 100) + 50,
+      };
+      return [...prev, newNode];
+    });
+    setNodeCounter(prev => prev + 1);
   }
 
   const deleteNode = () => {
