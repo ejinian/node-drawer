@@ -8,6 +8,12 @@ function App() {
   const [arrows, setArrows] = useState([]);
   const [drawingArrow, setDrawingArrow] = useState(null);
   const [nodeCounter, setNodeCounter] = useState(1);
+  const [contextMenu, setContextMenu] = useState({
+     visible: false,
+     x: 0,
+     y: 0,
+     nodeId: null
+  });
 
   const generateRandomPosition = () => {
     const newNode = {
@@ -112,6 +118,27 @@ function App() {
     setDragging(null);
   }
 
+  const handleNodeContextMenu = (e, nodeId) => {
+     e.preventDefault();
+     e.stopPropagation();
+     setContextMenu({
+       visible: true,
+       x: e.clientX,
+       y: e.clientY,
+       nodeId
+     });
+   }
+    
+   const handleCanvasContextMenu = (e) => {
+     e.preventDefault();
+     setContextMenu({
+       visible: true,
+       x: e.clientX,
+       y: e.clientY,
+       nodeId: null
+     });
+   }
+
   useEffect(() => {
     if (dragging && !drawMode) {
       document.addEventListener('mousemove', handleMouseMove);
@@ -121,7 +148,17 @@ function App() {
         document.removeEventListener('mouseup', handleMouseUp);
       }
     }
-  }, [dragging, drawMode])
+  }, [dragging, drawMode]);
+
+  useEffect(() => {
+    const handleAnyClick = () => {
+      if (contextMenu.visible) {
+        setContextMenu({ visible: false, x: 0, y: 0, nodeId: null });
+      }
+    }
+    window.addEventListener('click', handleAnyClick);
+    return () => window.removeEventListener('click', handleAnyClick);
+  }, [contextMenu.visible]);
 
   const getArrowPath = (fromNode, toNode) => {
     const fromX = fromNode.x + 20;
@@ -162,14 +199,13 @@ function App() {
         )}
       </div>
       
-      <div className="canvas">
+      <div className="canvas" onContextMenu={handleCanvasContextMenu}>
         <svg className="arrows-layer">
           {arrows.map(arrow => {
-            const fromNode = nodes.find(n => n.id === arrow.from)
-            const toNode = nodes.find(n => n.id === arrow.to)
-            if (!fromNode || !toNode) return null
-            
-            const { startX, startY, endX, endY, angle } = getArrowPath(fromNode, toNode)
+            const fromNode = nodes.find(n => n.id === arrow.from);
+            const toNode = nodes.find(n => n.id === arrow.to);
+            if (!fromNode || !toNode) return null;
+            const { startX, startY, endX, endY, angle } = getArrowPath(fromNode, toNode);
             
             return (
               <g key={arrow.id}>
@@ -199,11 +235,49 @@ function App() {
               top: `${node.y}px`,
             }}
             onMouseDown={(e) => handleMouseDown(e, node.id)}
+            onContextMenu={(e) => handleNodeContextMenu(e, node.id)}
           >
             {node.id}
           </div>
         ))}
       </div>
+      {contextMenu.visible && (
+      <div
+        className="context-menu"
+        style={{ top: contextMenu.y + 'px', left: contextMenu.x + 'px' }}
+      >
+        {contextMenu.nodeId !== null ? (
+          <div
+            className="context-menu-item"
+            onClick={() => {
+              setNodes(prev => prev.filter(n => n.id !== contextMenu.nodeId))
+              setArrows(prev =>
+                prev.filter(a => a.from !== contextMenu.nodeId && a.to !== contextMenu.nodeId)
+              )
+              setContextMenu({ visible: false, x: 0, y: 0, nodeId: null })
+            }}
+          >
+            Delete Node
+          </div>
+        ) : (
+          <div
+            className="context-menu-item"
+            onClick={() => {
+              const newX = contextMenu.x - document.querySelector('.canvas').getBoundingClientRect().left - 20;
+              const newY = contextMenu.y - document.querySelector('.canvas').getBoundingClientRect().top - 20;
+              setNodes(prev => [
+                ...prev,
+                { id: nodeCounter, x: newX, y: newY }
+              ]);
+              setNodeCounter(prev => prev + 1);
+              setContextMenu({ visible: false, x: 0, y: 0, nodeId: null });
+            }}
+          >
+            Add New Node
+          </div>
+        )}
+      </div>
+    )}
     </div>
   )
 }
