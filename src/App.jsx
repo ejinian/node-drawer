@@ -260,7 +260,8 @@ function App() {
             Delete Node
           </div>
         ) : (
-          <div
+          <>
+            <div
             className="context-menu-item"
             onClick={() => {
               const newX = contextMenu.x - document.querySelector('.canvas').getBoundingClientRect().left - 20;
@@ -272,9 +273,28 @@ function App() {
               setNodeCounter(prev => prev + 1);
               setContextMenu({ visible: false, x: 0, y: 0, nodeId: null });
             }}
-          >
-            Add New Node
-          </div>
+            >
+              Add New Node
+            </div>
+            <div
+              className="context-menu-item"
+              onClick={() => {
+                setDrawMode(prev => !prev);
+                setContextMenu({ visible: false, x: 0, y: 0, nodeId: null });
+              }}
+            >
+              Toggle Draw Mode
+            </div>
+            <div
+              className="context-menu-item"
+              onClick={() => {
+                deleteAllNodes();
+                setContextMenu({ visible: false, x: 0, y: 0, nodeId: null });
+              }}
+            >
+              Delete All Nodes
+            </div>
+          </>
         )}
       </div>
     )}
