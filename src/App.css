@@ -1,0 +1,160 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.App {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: Arial, sans-serif;
+  background-color: #2c2c2c;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.controls {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+.controls button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.controls button:first-child {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.controls button:first-child:hover {
+  background-color: #45a049;
+}
+
+.controls button:nth-child(2) {
+  background-color: #f44336;
+  color: white;
+}
+
+.controls button:nth-child(2):hover:not(:disabled) {
+  background-color: #da190b;
+}
+
+.controls button:nth-child(3) {
+  background-color: #ff9800;
+  color: white;
+}
+
+.controls button:nth-child(3):hover:not(:disabled) {
+  background-color: #e68900;
+}
+
+.controls button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.node-count {
+  font-weight: bold;
+  color: white;
+  margin-left: 10px;
+}
+
+.controls button:nth-child(4) {
+  background-color: #9c27b0;
+  color: white;
+}
+
+.controls button:nth-child(4):hover {
+  background-color: #7b1fa2;
+}
+
+.controls button:nth-child(4).active {
+  background-color: #4caf50;
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+.draw-instruction {
+  color: #4caf50;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.canvas {
+  position: relative;
+  width: 85vw;
+  height: 75vh;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  overflow: hidden;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.arrows-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.node {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background-color: #2196F3;
+  border: 2px solid #1976D2;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 12px;
+  cursor: grab;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  z-index: 2;
+  transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.node:hover {
+  transform: scale(1.1);
+  background-color: #1976D2;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.node:active {
+  cursor: grabbing;
+}
+
+.node.draw-mode {
+  cursor: crosshair;
+}
+
+.node.draw-mode:hover {
+  background-color: #4caf50;
+  border-color: #388e3c;
+}
+
+.node.selected {
+  background-color: #ff9800;
+  border-color: #f57c00;
+  box-shadow: 0 0 15px rgba(255, 152, 0, 0.6);
+}
