@@ -15,6 +15,45 @@ function App() {
      nodeId: null
   });
 
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [hueValue, setHueValue] = useState(240);
+  const [darknessLevel, setDarknessLevel] = useState(50);
+  const [showThemeMenu, setShowThemeMenu] = useState(false);
+
+  // Generate theme colors based on current settings
+  const getThemeColors = () => {
+    if (isDarkMode) {
+      const lightness = Math.max(10, 40 - (darknessLevel * 0.3));
+      const saturation = Math.max(20, 60 - (darknessLevel * 0.4));
+      return {
+        primary: `hsl(${hueValue}, ${saturation}%, ${lightness}%)`,
+        secondary: `hsl(${(hueValue + 30) % 360}, ${saturation}%, ${lightness + 10}%)`,
+        accent: `hsl(${(hueValue + 60) % 360}, ${Math.min(80, saturation + 20)}%, ${lightness + 15}%)`
+      };
+    } else {
+      const lightness = Math.min(85, 50 + (hueValue / 360 * 35));
+      const saturation = Math.min(80, 40 + (hueValue / 360 * 40));
+      return {
+        primary: `hsl(${hueValue}, ${saturation}%, ${lightness}%)`,
+        secondary: `hsl(${(hueValue + 40) % 360}, ${saturation}%, ${Math.min(90, lightness + 15)}%)`,
+        accent: `hsl(${(hueValue + 80) % 360}, ${Math.min(90, saturation + 20)}%, ${Math.max(30, lightness - 20)}%)`
+      };
+    }
+  };
+
+  // Apply theme to document body
+  useEffect(() => {
+    const colors = getThemeColors();
+    const gradient = `linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%)`;
+    document.body.style.background = gradient;
+    
+    // Set CSS custom properties for theme colors
+    document.documentElement.style.setProperty('--theme-primary', colors.primary);
+    document.documentElement.style.setProperty('--theme-secondary', colors.secondary);
+    document.documentElement.style.setProperty('--theme-accent', colors.accent);
+    document.documentElement.style.setProperty('--is-dark-mode', isDarkMode ? '1' : '0');
+  }, [isDarkMode, hueValue, darknessLevel]);
+
   useEffect(() => {
     let counter = nodeCounter;
     const initialNodes = [];
@@ -149,14 +188,17 @@ function App() {
   }, [dragging, drawMode]);
 
   useEffect(() => {
-    const handleAnyClick = () => {
-      if (contextMenu.visible) {
+    const handleAnyClick = (e) => {
+      if (contextMenu.visible && !e.target.closest('.context-menu')) {
         setContextMenu({ visible: false, x: 0, y: 0, nodeId: null });
+      }
+      if (showThemeMenu && !e.target.closest('.theme-container')) {
+        setShowThemeMenu(false);
       }
     }
     window.addEventListener('click', handleAnyClick);
     return () => window.removeEventListener('click', handleAnyClick);
-  }, [contextMenu.visible]);
+  }, [contextMenu.visible, showThemeMenu]);
 
   const getArrowPath = (fromNode, toNode) => {
     const fromX = fromNode.x + 20;
@@ -177,6 +219,66 @@ function App() {
 
   return (
     <div className="App">
+      <div className="theme-container">
+        <button 
+          className="theme-toggle-btn"
+          onClick={() => setShowThemeMenu(!showThemeMenu)}
+        >
+          🎨
+        </button>
+        
+        {showThemeMenu && (
+          <div className="theme-menu">
+            <div className="theme-section">
+              <h3>Theme</h3>
+              <div className="mode-toggle">
+                <button 
+                  className={`mode-btn ${!isDarkMode ? 'active' : ''}`}
+                  onClick={() => setIsDarkMode(false)}
+                >
+                  ☀️ Light
+                </button>
+                <button 
+                  className={`mode-btn ${isDarkMode ? 'active' : ''}`}
+                  onClick={() => setIsDarkMode(true)}
+                >
+                  🌙 Dark
+                </button>
+              </div>
+            </div>
+            
+            <div className="theme-section">
+              <h3>{isDarkMode ? 'Darkness Level' : 'Color Hue'}</h3>
+              {isDarkMode ? (
+                <div className="slider-container">
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={darknessLevel}
+                    onChange={(e) => setDarknessLevel(parseInt(e.target.value))}
+                    className="darkness-slider"
+                  />
+                  <span className="slider-label">{darknessLevel}%</span>
+                </div>
+              ) : (
+                <div className="slider-container">
+                  <input
+                    type="range"
+                    min="0"
+                    max="360"
+                    value={hueValue}
+                    onChange={(e) => setHueValue(parseInt(e.target.value))}
+                    className="hue-slider"
+                  />
+                  <div className="hue-preview" style={{ backgroundColor: `hsl(${hueValue}, 70%, 60%)` }}></div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
       <div className="controls">
         <button onClick={addNode}>Add Node</button>
         <button onClick={deleteNode} disabled={nodes.length === 0}>
@@ -209,12 +311,12 @@ function App() {
                   y1={startY}
                   x2={endX}
                   y2={endY}
-                  stroke="#333"
-                  strokeWidth="2"
+                  stroke="rgba(255, 255, 255, 0.6)"
+                  strokeWidth="2.5"
                 />
                 <polygon
                   points={`${endX},${endY} ${endX - 10 * Math.cos(angle - Math.PI/6)},${endY - 10 * Math.sin(angle - Math.PI/6)} ${endX - 10 * Math.cos(angle + Math.PI/6)},${endY - 10 * Math.sin(angle + Math.PI/6)}`}
-                  fill="#333"
+                  fill="rgba(255, 255, 255, 0.8)"
                 />
               </g>
             )
