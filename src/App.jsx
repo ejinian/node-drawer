@@ -192,9 +192,6 @@ function App() {
           {drawMode ? 'Draw Mode ON' : 'Draw Mode OFF'}
         </button>
         <span className="node-count">Nodes: {nodes.length}</span>
-        {drawMode && drawingArrow && (
-          <span className="draw-instruction">Click another node to draw arrow</span>
-        )}
       </div>
       
       <div className="canvas" onContextMenu={handleCanvasContextMenu}>
