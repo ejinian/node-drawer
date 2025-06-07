@@ -1,0 +1,42 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="823" height="685.8" viewBox="0 0 1080 900">
+  <defs>
+    <filter id="wavy">
+      <feTurbulence type="fractalNoise" baseFrequency="0.01" numOctaves="3" stitchTiles="stitch"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="innerShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="20"/>
+      <feOffset dx="2" dy="2" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.5" intercept="-0.1"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode in="offsetblur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect fill="#1B95FF" width="1080" height="900"/>
+
+  <g transform="translate(0, 20)">
+    <g stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="300" y1="250" x2="540" y2="250"/>
+      <line x1="540" y1="250" x2="780" y2="250"/>
+      <line x1="300" y1="250" x2="420" y2="450"/>
+      <line x1="780" y1="250" x2="660" y2="450"/>
+      <line x1="420" y1="450" x2="540" y2="650"/>
+      <line x1="660" y1="450" x2="540" y2="650"/>
+    </g>
+
+    <g filter="url(#innerShadow)">
+      <circle cx="300" cy="250" r="50" fill="#444" />
+      <circle cx="540" cy="250" r="50" fill="#aaa" />
+      <circle cx="780" cy="250" r="50" fill="#ddd" />
+      <circle cx="420" cy="450" r="50" fill="#999" />
+      <circle cx="660" cy="450" r="50" fill="#444" />
+      <circle cx="540" cy="650" r="50" fill="#aaa" />
+    </g>
+  </g>
+</svg>
+  

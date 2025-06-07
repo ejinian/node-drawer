@@ -16,11 +16,10 @@ function App() {
   });
 
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [hueValue, setHueValue] = useState(240);
+  const [hueValue, setHueValue] = useState(20);
   const [darknessLevel, setDarknessLevel] = useState(50);
   const [showThemeMenu, setShowThemeMenu] = useState(false);
 
-  // Generate theme colors based on current settings
   const getThemeColors = () => {
     if (isDarkMode) {
       const lightness = Math.max(10, 40 - (darknessLevel * 0.3));
@@ -41,13 +40,11 @@ function App() {
     }
   };
 
-  // Apply theme to document body
   useEffect(() => {
     const colors = getThemeColors();
     const gradient = `linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%)`;
     document.body.style.background = gradient;
     
-    // Set CSS custom properties for theme colors
     document.documentElement.style.setProperty('--theme-primary', colors.primary);
     document.documentElement.style.setProperty('--theme-secondary', colors.secondary);
     document.documentElement.style.setProperty('--theme-accent', colors.accent);
@@ -224,7 +221,11 @@ function App() {
           className="theme-toggle-btn"
           onClick={() => setShowThemeMenu(!showThemeMenu)}
         >
-          🎨
+          <img 
+            src="/theme.svg" 
+            alt="Theme Toggle" 
+            className="theme-icon"
+          />
         </button>
         
         {showThemeMenu && (
@@ -315,7 +316,7 @@ function App() {
                   strokeWidth="2.5"
                 />
                 <polygon
-                  points={`${endX},${endY} ${endX - 10 * Math.cos(angle - Math.PI/6)},${endY - 10 * Math.sin(angle - Math.PI/6)} ${endX - 10 * Math.cos(angle + Math.PI/6)},${endY - 10 * Math.sin(angle + Math.PI/6)}`}
+                  points={`${endX},${endY} ${endX - 15 * Math.cos(angle - Math.PI/6)},${endY - 15 * Math.sin(angle - Math.PI/6)} ${endX - 15 * Math.cos(angle + Math.PI/6)},${endY - 15 * Math.sin(angle + Math.PI/6)}`}
                   fill="rgba(255, 255, 255, 0.8)"
                 />
               </g>
