@@ -15,9 +15,9 @@ function App() {
      nodeId: null
   });
 
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [hueValue, setHueValue] = useState(20);
-  const [darknessLevel, setDarknessLevel] = useState(50);
+  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [hueValue, setHueValue] = useState(0);
+  const [darknessLevel, setDarknessLevel] = useState(100);
   const [showThemeMenu, setShowThemeMenu] = useState(false);
 
   const getThemeColors = () => {
@@ -292,7 +292,7 @@ function App() {
           onClick={toggleDrawMode}
           className={drawMode ? 'active' : ''}
         >
-          {drawMode ? 'Draw Mode ON' : 'Draw Mode OFF'}
+          {drawMode ? 'Draw Arrows ON' : 'Draw Arrows OFF'}
         </button>
         <span className="node-count">Nodes: {nodes.length}</span>
       </div>
@@ -381,7 +381,7 @@ function App() {
                 setContextMenu({ visible: false, x: 0, y: 0, nodeId: null });
               }}
             >
-              Toggle Draw Mode
+              Toggle Draw Arrows
             </div>
             <div
               className="context-menu-item"
